@@ -21,12 +21,24 @@ func handler(w http.ResponseWriter, r *http.Request) {
         default:
             w.WriteHeader(http.StatusNotImplemented)
         }
-    default:
-        l := "https://www.bobkidbob.com" + url.EscapedPath()
-        if url.RawQuery != "" {
-            l += "?" + url.RawQuery
-        }
+    case "bobkidbob.com":
+        l := "https://www.bobkidbob.com" + pathAndQuery(url)
         http.Redirect(w, r, l, http.StatusMovedPermanently)
+    case "bobkidbob.co.uk":
+        l := "https://www.bobkidbob.co.uk" + pathAndQuery(url)
+        http.Redirect(w, r, l, http.StatusMovedPermanently)
+    case "bobkidbob.info":
+        l := "https://www.bobkidbob.info" + pathAndQuery(url)
+        http.Redirect(w, r, l, http.StatusMovedPermanently)
+    case "bobkidbob.net":
+        l := "https://www.bobkidbob.net" + pathAndQuery(url)
+        http.Redirect(w, r, l, http.StatusMovedPermanently)
+    case "bobkidbob.org":
+        l := "https://www.bobkidbob.org" + pathAndQuery(url)
+        http.Redirect(w, r, l, http.StatusMovedPermanently)
+    default:
+        l := "https://www.bobkidbob.com" + pathAndQuery(url)
+        http.Redirect(w, r, l, http.StatusFound)
     }
 }
 
@@ -37,4 +49,12 @@ func head(w http.ResponseWriter, r *http.Request, url *url.URL) {
     default:
         w.WriteHeader(http.StatusNotFound)
     }
+}
+
+func pathAndQuery(url *url.URL) string {
+    s := url.EscapedPath()
+    if url.RawQuery != "" {
+        s += "?" + url.RawQuery
+    }
+    return s
 }
