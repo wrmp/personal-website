@@ -1,0 +1,12 @@
+runtime: go
+api_version: go1
+handlers:
+- url: /.*
+  script: _go_app
+  secure: always
+  redirect_http_response_code: 301
+instance_class: F1
+automatic_scaling:
+  min_idle_instances: 1
+  max_pending_latency: automatic
+  max_concurrent_requests: 80
