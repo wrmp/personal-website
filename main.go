@@ -49,15 +49,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
     case "www.bobkidbob.com":
         serve(w, r, url)
     case "bobkidbob.com":
-        http.Redirect(w, r, "https://www.bobkidbob.com" + pathAndQuery(url), http.StatusPermanentRedirect)
+        permanentRedirect(w, r, url, "www.bobkidbob.com")
     case "bobkidbob.co.uk":
-        http.Redirect(w, r, "https://www.bobkidbob.co.uk" + pathAndQuery(url), http.StatusPermanentRedirect)
+        permanentRedirect(w, r, url, "www.bobkidbob.co.uk")
     case "bobkidbob.info":
-        http.Redirect(w, r, "https://www.bobkidbob.info" + pathAndQuery(url), http.StatusPermanentRedirect)
+        permanentRedirect(w, r, url, "www.bobkidbob.info")
     case "bobkidbob.net":
-        http.Redirect(w, r, "https://www.bobkidbob.net" + pathAndQuery(url), http.StatusPermanentRedirect)
+        permanentRedirect(w, r, url, "www.bobkidbob.net")
     case "bobkidbob.org":
-        http.Redirect(w, r, "https://www.bobkidbob.org" + pathAndQuery(url), http.StatusPermanentRedirect)
+        permanentRedirect(w, r, url, "www.bobkidbob.org")
     default:
         http.Redirect(w, r, "https://www.bobkidbob.com" + pathAndQuery(url), http.StatusTemporaryRedirect)
     }
@@ -119,4 +119,8 @@ func pathAndQuery(url *url.URL) string {
         s += "?" + url.RawQuery
     }
     return s
+}
+
+func permanentRedirect(w http.ResponseWriter, r *http.Request, url *url.URL, host string) {
+    http.Redirect(w, r, "https://" + host + pathAndQuery(url), http.StatusPermanentRedirect)
 }
