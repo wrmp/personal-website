@@ -2,7 +2,7 @@ package main
 
 import (
     "google.golang.org/appengine"
-    _ "backend"
+    _ "github.com/Bobkidbob/personal-website/backend"
 )
 
 func main() {
