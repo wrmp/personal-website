@@ -45,17 +45,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
     case "www.bobkidbob.com":
         serve(w, r, url)
     case "bobkidbob.com":
-        http.Redirect(w, r, "https://www.bobkidbob.com" + pathAndQuery(url), http.StatusMovedPermanently)
+        http.Redirect(w, r, "https://www.bobkidbob.com" + pathAndQuery(url), http.StatusPermanentRedirect)
     case "bobkidbob.co.uk":
-        http.Redirect(w, r, "https://www.bobkidbob.co.uk" + pathAndQuery(url), http.StatusMovedPermanently)
+        http.Redirect(w, r, "https://www.bobkidbob.co.uk" + pathAndQuery(url), http.StatusPermanentRedirect)
     case "bobkidbob.info":
-        http.Redirect(w, r, "https://www.bobkidbob.info" + pathAndQuery(url), http.StatusMovedPermanently)
+        http.Redirect(w, r, "https://www.bobkidbob.info" + pathAndQuery(url), http.StatusPermanentRedirect)
     case "bobkidbob.net":
-        http.Redirect(w, r, "https://www.bobkidbob.net" + pathAndQuery(url), http.StatusMovedPermanently)
+        http.Redirect(w, r, "https://www.bobkidbob.net" + pathAndQuery(url), http.StatusPermanentRedirect)
     case "bobkidbob.org":
-        http.Redirect(w, r, "https://www.bobkidbob.org" + pathAndQuery(url), http.StatusMovedPermanently)
+        http.Redirect(w, r, "https://www.bobkidbob.org" + pathAndQuery(url), http.StatusPermanentRedirect)
     default:
-        http.Redirect(w, r, "https://www.bobkidbob.com" + pathAndQuery(url), http.StatusFound)
+        http.Redirect(w, r, "https://www.bobkidbob.com" + pathAndQuery(url), http.StatusTemporaryRedirect)
     }
 }
 
@@ -89,7 +89,7 @@ func serve(w http.ResponseWriter, r *http.Request, url *url.URL) {
 func head(w http.ResponseWriter, r *http.Request, url *url.URL) {
     switch url.Path {
     case "/":
-        http.Redirect(w, r, "https://www.linkedin.com/in/bobkidbob/", http.StatusFound)
+        http.Redirect(w, r, "https://www.linkedin.com/in/bobkidbob/", http.StatusSeeOther)
     default:
         w.WriteHeader(http.StatusNotFound)
     }
