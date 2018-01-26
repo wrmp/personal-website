@@ -9,34 +9,22 @@ import (
 	"google.golang.org/appengine"
 )
 
-var dev bool
+var dev = appengine.IsDevAppServer()
 var pages struct {
 	MethodNotAllowed []byte
 	NotFound         []byte
 	NotImplemented   []byte
 }
 
-func init() {
-	dev = appengine.IsDevAppServer()
-	f, err := ioutil.ReadFile("frontend/method-not-allowed.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	pages.MethodNotAllowed = f
-	f, err = ioutil.ReadFile("frontend/not-found.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	pages.NotFound = f
-	f, err = ioutil.ReadFile("frontend/not-implemented.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	pages.NotImplemented = f
-	http.HandleFunc("/", handler)
-}
-
 func main() {
+	var err error
+	pages.MethodNotAllowed, err = ioutil.ReadFile("frontend/method-not-allowed.html")
+	handleError(err)
+	pages.NotFound, err = ioutil.ReadFile("frontend/not-found.html")
+	handleError(err)
+	pages.NotImplemented, err = ioutil.ReadFile("frontend/not-implemented.html")
+	handleError(err)
+	http.HandleFunc("/", handler)
 	appengine.Main()
 }
 
@@ -124,4 +112,10 @@ func pathAndQuery(url *url.URL) string {
 
 func permanentRedirect(w http.ResponseWriter, r *http.Request, url *url.URL, host string) {
 	http.Redirect(w, r, "https://"+host+pathAndQuery(url), http.StatusPermanentRedirect)
+}
+
+func handleError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
