@@ -34,6 +34,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	url := r.URL
+	if url.Scheme != "https" {
+		permanentRedirect(w, r, url, url.Hostname())
+		return
+	}
+	w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 	switch url.Hostname() {
 	case "www.bobkidbob.com":
 		serve(w, r, url)
