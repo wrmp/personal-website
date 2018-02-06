@@ -15,6 +15,20 @@ var pages struct {
 	NotFound         []byte
 	NotImplemented   []byte
 }
+var methods = map[string]func(route, http.ResponseWriter, *http.Request){
+	http.MethodGet:     route.Get,
+	http.MethodHead:    route.Head,
+	http.MethodPost:    route.Post,
+	http.MethodPut:     route.Put,
+	http.MethodPatch:   route.Patch,
+	http.MethodDelete:  route.Delete,
+	http.MethodConnect: route.Connect,
+	http.MethodOptions: route.Options,
+	http.MethodTrace:   route.Trace,
+}
+var routes = map[string]route{
+	"/": &home{defaultRoute{Allow: http.MethodGet + ", " + http.MethodHead}},
+}
 
 func main() {
 	var err error
@@ -58,51 +72,21 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func serve(w http.ResponseWriter, r *http.Request, url *url.URL) {
-	switch r.Method {
-	case http.MethodGet:
-		head(w, r, url)
-		get(w, url)
-	case http.MethodHead:
-		head(w, r, url)
-	case http.MethodPost:
-		methodNotAllowed(w)
-	case http.MethodPut:
-		methodNotAllowed(w)
-	case http.MethodPatch:
-		methodNotAllowed(w)
-	case http.MethodDelete:
-		methodNotAllowed(w)
-	case http.MethodConnect:
-		methodNotAllowed(w)
-	case http.MethodOptions:
-		methodNotAllowed(w)
-	case http.MethodTrace:
-		methodNotAllowed(w)
-	default:
+	if method, exists := methods[r.Method]; exists {
+		if rou, exists := routes[url.Path]; exists {
+			method(rou, w, r)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write(pages.NotFound)
+		}
+	} else {
 		w.WriteHeader(http.StatusNotImplemented)
 		w.Write(pages.NotImplemented)
 	}
 }
 
-func head(w http.ResponseWriter, r *http.Request, url *url.URL) {
-	switch url.Path {
-	case "/":
-		http.Redirect(w, r, "https://www.linkedin.com/in/bobkidbob/", http.StatusSeeOther)
-	default:
-		w.WriteHeader(http.StatusNotFound)
-	}
-}
-
-func get(w http.ResponseWriter, url *url.URL) {
-	switch url.Path {
-	case "/":
-		return
-	default:
-		w.Write(pages.NotFound)
-	}
-}
-
-func methodNotAllowed(w http.ResponseWriter) {
+func methodNotAllowed(w http.ResponseWriter, allow string) {
+	w.Header().Set("Allow", allow)
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	w.Write(pages.MethodNotAllowed)
 }
