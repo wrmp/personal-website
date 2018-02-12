@@ -53,19 +53,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
-	switch url.Hostname() {
+	hostname := url.Hostname()
+	switch hostname {
 	case "www.bobkidbob.com":
 		serve(w, r, url)
-	case "bobkidbob.com":
-		permanentRedirect(w, r, url, "www.bobkidbob.com")
-	case "bobkidbob.co.uk":
-		permanentRedirect(w, r, url, "www.bobkidbob.co.uk")
-	case "bobkidbob.info":
-		permanentRedirect(w, r, url, "www.bobkidbob.info")
-	case "bobkidbob.net":
-		permanentRedirect(w, r, url, "www.bobkidbob.net")
-	case "bobkidbob.org":
-		permanentRedirect(w, r, url, "www.bobkidbob.org")
+	case "bobkidbob.com", "bobkidbob.co.uk", "bobkidbob.info", "bobkidbob.net", "bobkidbob.org":
+		permanentRedirect(w, r, url, "www."+hostname)
 	default:
 		http.Redirect(w, r, "https://www.bobkidbob.com"+pathAndQuery(url), http.StatusTemporaryRedirect)
 	}
