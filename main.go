@@ -9,26 +9,29 @@ import (
 	"google.golang.org/appengine"
 )
 
-var dev = appengine.IsDevAppServer()
 var pages struct {
 	MethodNotAllowed []byte
 	NotFound         []byte
 	NotImplemented   []byte
 }
-var methods = map[string]func(route, http.ResponseWriter, *http.Request){
-	http.MethodGet:     route.Get,
-	http.MethodHead:    route.Head,
-	http.MethodPost:    route.Post,
-	http.MethodPut:     route.Put,
-	http.MethodPatch:   route.Patch,
-	http.MethodDelete:  route.Delete,
-	http.MethodConnect: route.Connect,
-	http.MethodOptions: route.Options,
-	http.MethodTrace:   route.Trace,
-}
-var routes = map[string]route{
-	"/": &home{defaultRoute{Allow: http.MethodGet + ", " + http.MethodHead}},
-}
+
+var (
+	dev     = appengine.IsDevAppServer()
+	methods = map[string]func(route, http.ResponseWriter, *http.Request){
+		http.MethodGet:     route.Get,
+		http.MethodHead:    route.Head,
+		http.MethodPost:    route.Post,
+		http.MethodPut:     route.Put,
+		http.MethodPatch:   route.Patch,
+		http.MethodDelete:  route.Delete,
+		http.MethodConnect: route.Connect,
+		http.MethodOptions: route.Options,
+		http.MethodTrace:   route.Trace,
+	}
+	routes = map[string]route{
+		"/": &home{defaultRoute{Allow: http.MethodGet + ", " + http.MethodHead}},
+	}
+)
 
 func main() {
 	var err error
@@ -66,7 +69,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func serve(w http.ResponseWriter, r *http.Request, url *url.URL) {
 	if method, exists := methods[r.Method]; exists {
-		if rou, exists := routes[url.Path]; exists {
+		var rou route
+		if rou, exists = routes[url.Path]; exists {
 			method(rou, w, r)
 		} else {
 			w.WriteHeader(http.StatusNotFound)
