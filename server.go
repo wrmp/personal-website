@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"io/ioutil"
@@ -9,31 +9,28 @@ import (
 	"google.golang.org/appengine"
 )
 
+var dev = appengine.IsDevAppServer()
 var pages struct {
 	MethodNotAllowed []byte
 	NotFound         []byte
 	NotImplemented   []byte
 }
+var methods = map[string]func(route, http.ResponseWriter, *http.Request){
+	http.MethodGet:     route.Get,
+	http.MethodHead:    route.Head,
+	http.MethodPost:    route.Post,
+	http.MethodPut:     route.Put,
+	http.MethodPatch:   route.Patch,
+	http.MethodDelete:  route.Delete,
+	http.MethodConnect: route.Connect,
+	http.MethodOptions: route.Options,
+	http.MethodTrace:   route.Trace,
+}
+var routes = map[string]route{
+	"/": &home{defaultRoute{Allow: http.MethodGet + ", " + http.MethodHead}},
+}
 
-var (
-	dev     = appengine.IsDevAppServer()
-	methods = map[string]func(route, http.ResponseWriter, *http.Request){
-		http.MethodGet:     route.Get,
-		http.MethodHead:    route.Head,
-		http.MethodPost:    route.Post,
-		http.MethodPut:     route.Put,
-		http.MethodPatch:   route.Patch,
-		http.MethodDelete:  route.Delete,
-		http.MethodConnect: route.Connect,
-		http.MethodOptions: route.Options,
-		http.MethodTrace:   route.Trace,
-	}
-	routes = map[string]route{
-		"/": &home{defaultRoute{Allow: http.MethodGet + ", " + http.MethodHead}},
-	}
-)
-
-func main() {
+func init() {
 	var err error
 	pages.MethodNotAllowed, err = ioutil.ReadFile("frontend/method-not-allowed.html")
 	handleError(err)
@@ -42,7 +39,6 @@ func main() {
 	pages.NotImplemented, err = ioutil.ReadFile("frontend/not-implemented.html")
 	handleError(err)
 	http.HandleFunc("/", handler)
-	appengine.Main()
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
