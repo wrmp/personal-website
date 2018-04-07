@@ -9,7 +9,6 @@ type route interface {
 	Put(w http.ResponseWriter, r *http.Request)
 	Patch(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
-	Connect(w http.ResponseWriter, r *http.Request)
 	Options(w http.ResponseWriter, r *http.Request)
 	Trace(w http.ResponseWriter, r *http.Request)
 }
@@ -34,14 +33,16 @@ func (d *defaultRoute) Delete(w http.ResponseWriter, r *http.Request) {
 	methodNotAllowed(w, d.Allow)
 }
 
-func (d *defaultRoute) Connect(w http.ResponseWriter, r *http.Request) {
-	methodNotAllowed(w, d.Allow)
-}
-
 func (d *defaultRoute) Options(w http.ResponseWriter, r *http.Request) {
 	methodNotAllowed(w, d.Allow)
 }
 
 func (d *defaultRoute) Trace(w http.ResponseWriter, r *http.Request) {
 	methodNotAllowed(w, d.Allow)
+}
+
+func methodNotAllowed(w http.ResponseWriter, allow string) {
+	w.Header().Set("Allow", allow)
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	w.Write(pages.MethodNotAllowed)
 }

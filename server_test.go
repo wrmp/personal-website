@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
@@ -59,20 +60,7 @@ func TestAliases(t *testing.T) {
 
 // Test homepage.
 func TestHome(t *testing.T) {
-	w := httptest.NewRecorder()
-	r := httptest.NewRequest("GET", "https://www.bobkidbob.com/", nil)
-	handler(w, r)
-	res := w.Result()
-	if e, g := "303 See Other", res.Status; e != g {
-		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
-	}
-	l, err := res.Location()
-	if err != nil {
-		t.Error(err)
-	}
-	if e, g := "https://www.linkedin.com/in/bobkidbob/", l.String(); e != g {
-		t.Errorf("Expected location header \"%v\", but got \"%v\"", e, g)
-	}
+	testRoute(t, &homeTest{&defaultRouteTest{Path: "/"}})
 }
 
 // Test if non-existent page returns HTTP 404 Not Found error.
@@ -132,4 +120,21 @@ func forceHTTPS(t *testing.T, urn string) {
 	if e, g := "https://"+urn, l.String(); e != g {
 		t.Errorf("Expected location header \"%v\", but got \"%v\"", e, g)
 	}
+}
+
+func TestPathAndQuery(t *testing.T) {
+	if e, g := "/test?foo=1&bar=2", pathAndQuery(&url.URL{Path: "/test", RawQuery: "foo=1&bar=2"}); e != g {
+		t.Errorf("Expected path and query \"%v\", but got \"%v\"", e, g)
+	}
+}
+
+func testRoute(t *testing.T, route routeTest) {
+	t.Run("Get", route.TestGet)
+	t.Run("Head", route.TestHead)
+	t.Run("Post", route.TestPost)
+	t.Run("Put", route.TestPut)
+	t.Run("Patch", route.TestPatch)
+	t.Run("Delete", route.TestDelete)
+	t.Run("Options", route.TestOptions)
+	t.Run("Trace", route.TestTrace)
 }

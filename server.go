@@ -22,12 +22,11 @@ var methods = map[string]func(route, http.ResponseWriter, *http.Request){
 	http.MethodPut:     route.Put,
 	http.MethodPatch:   route.Patch,
 	http.MethodDelete:  route.Delete,
-	http.MethodConnect: route.Connect,
 	http.MethodOptions: route.Options,
 	http.MethodTrace:   route.Trace,
 }
 var routes = map[string]route{
-	"/": &home{defaultRoute{Allow: http.MethodGet + ", " + http.MethodHead}},
+	"/": newHome(),
 }
 
 func init() {
@@ -76,12 +75,6 @@ func serve(w http.ResponseWriter, r *http.Request, url *url.URL) {
 		w.WriteHeader(http.StatusNotImplemented)
 		w.Write(pages.NotImplemented)
 	}
-}
-
-func methodNotAllowed(w http.ResponseWriter, allow string) {
-	w.Header().Set("Allow", allow)
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	w.Write(pages.MethodNotAllowed)
 }
 
 func pathAndQuery(url *url.URL) string {
