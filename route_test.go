@@ -51,7 +51,7 @@ func testMethodNotAllowed(t *testing.T, method, path string) {
 	t.Log(r.URL)
 	handler(w, r)
 	res := w.Result()
-	if e, g := "405 Method Not Allowed", res.Status; e != g {
+	if e, g := http.StatusMethodNotAllowed, res.StatusCode; e != g {
 		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 	}
 }

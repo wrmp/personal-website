@@ -1,6 +1,7 @@
 package server
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
@@ -25,7 +26,7 @@ func TestNaked(t *testing.T) {
 		r := httptest.NewRequest("GET", "https://"+h, nil)
 		handler(w, r)
 		res := w.Result()
-		if e, g := "308 Permanent Redirect", res.Status; e != g {
+		if e, g := http.StatusPermanentRedirect, res.StatusCode; e != g {
 			t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 		}
 		l, err := res.Location()
@@ -45,7 +46,7 @@ func TestAliases(t *testing.T) {
 		r := httptest.NewRequest("GET", "https://www."+hosts[i]+"/", nil)
 		handler(w, r)
 		res := w.Result()
-		if e, g := "307 Temporary Redirect", res.Status; e != g {
+		if e, g := http.StatusTemporaryRedirect, res.StatusCode; e != g {
 			t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 		}
 		l, err := res.Location()
@@ -69,7 +70,7 @@ func TestNotFound(t *testing.T) {
 	r := httptest.NewRequest("POST", "https://www.bobkidbob.com/thispagedoesnotexist", nil)
 	handler(w, r)
 	res := w.Result()
-	if e, g := "404 Not Found", res.Status; e != g {
+	if e, g := http.StatusNotFound, res.StatusCode; e != g {
 		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 	}
 }
@@ -80,7 +81,7 @@ func TestNotImplemented(t *testing.T) {
 	r := httptest.NewRequest("FAKEMETHOD", "https://www.bobkidbob.com/", nil)
 	handler(w, r)
 	res := w.Result()
-	if e, g := "501 Not Implemented", res.Status; e != g {
+	if e, g := http.StatusNotImplemented, res.StatusCode; e != g {
 		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 	}
 }
@@ -92,7 +93,7 @@ func TestDev(t *testing.T) {
 	r := httptest.NewRequest("GET", "http://localhost/", nil)
 	handler(w, r)
 	res := w.Result()
-	if e, g := "303 See Other", res.Status; e != g {
+	if e, g := http.StatusSeeOther, res.StatusCode; e != g {
 		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 	}
 	l, err := res.Location()
@@ -110,7 +111,7 @@ func forceHTTPS(t *testing.T, urn string) {
 	r := httptest.NewRequest("GET", "http://"+urn, nil)
 	handler(w, r)
 	res := w.Result()
-	if e, g := "308 Permanent Redirect", res.Status; e != g {
+	if e, g := http.StatusPermanentRedirect, res.StatusCode; e != g {
 		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 	}
 	l, err := res.Location()

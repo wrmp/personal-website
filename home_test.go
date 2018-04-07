@@ -23,7 +23,7 @@ func testHome(t *testing.T, method, path string) {
 	r := httptest.NewRequest(method, "https://www.bobkidbob.com"+path, nil)
 	handler(w, r)
 	res := w.Result()
-	if e, g := "303 See Other", res.Status; e != g {
+	if e, g := http.StatusSeeOther, res.StatusCode; e != g {
 		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
 	}
 	l, err := res.Location()
