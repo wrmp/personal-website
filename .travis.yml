@@ -7,4 +7,4 @@ before_install:
 deploy:
   provider: gae
   keyfile: gae-service-account.json
-  project: personal-website
+  project: bobkidbob-website
