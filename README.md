@@ -1,1 +1,1 @@
-# Personal Website [![Build Status](https://travis-ci.org/Bobkidbob/personal-website.svg?branch=master)](https://travis-ci.org/Bobkidbob/personal-website)
+# Personal Website [![Build Status](https://travis-ci.org/Bobkidbob/personal-website.svg?branch=master)](https://travis-ci.org/Bobkidbob/personal-website) [![Coverage Status](https://coveralls.io/repos/github/Bobkidbob/personal-website/badge.svg?branch=master)](https://coveralls.io/github/Bobkidbob/personal-website?branch=master)
