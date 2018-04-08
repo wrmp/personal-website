@@ -61,7 +61,7 @@ func TestAliases(t *testing.T) {
 
 // Test homepage.
 func TestHome(t *testing.T) {
-	testRoute(t, &homeTest{&defaultRouteTest{Path: "/"}})
+	testRoute(t, newHomeTest("/"))
 }
 
 // Test if non-existent page returns HTTP 404 Not Found error.

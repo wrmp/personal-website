@@ -10,6 +10,10 @@ type homeTest struct {
 	*defaultRouteTest
 }
 
+func newHomeTest(path string) *homeTest {
+	return &homeTest{&defaultRouteTest{Path: path}}
+}
+
 func (home *homeTest) TestGet(t *testing.T) {
 	testHome(t, http.MethodGet, home.Path)
 }
