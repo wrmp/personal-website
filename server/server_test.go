@@ -86,25 +86,6 @@ func TestNotImplemented(t *testing.T) {
 	}
 }
 
-// Test development mode.
-func TestDev(t *testing.T) {
-	dev = true
-	w := httptest.NewRecorder()
-	r := httptest.NewRequest("GET", "http://localhost/", nil)
-	handler(w, r)
-	res := w.Result()
-	if e, g := http.StatusSeeOther, res.StatusCode; e != g {
-		t.Errorf("Expected HTTP status \"%v\", but got \"%v\"", e, g)
-	}
-	l, err := res.Location()
-	if err != nil {
-		t.Error(err)
-	}
-	if e, g := "https://www.linkedin.com/in/wrmp/", l.String(); e != g {
-		t.Errorf("Expected location header \"%v\", but got \"%v\"", e, g)
-	}
-}
-
 // Test if a URN redirects to HTTPS.
 func forceHTTPS(t *testing.T, urn string) {
 	w := httptest.NewRecorder()

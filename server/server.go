@@ -5,11 +5,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-
-	"google.golang.org/appengine"
 )
 
-var dev = appengine.IsDevAppServer()
 var pages struct {
 	MethodNotAllowed []byte
 	NotFound         []byte
@@ -41,10 +38,6 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	if dev {
-		serve(w, r, r.URL)
-		return
-	}
 	url := r.URL
 	if url.Scheme != "https" {
 		permanentRedirect(w, r, url, url.Hostname())
