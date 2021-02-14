@@ -100,7 +100,7 @@ func TestDev(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if e, g := "https://www.linkedin.com/in/bobkidbob/", l.String(); e != g {
+	if e, g := "https://www.linkedin.com/in/wrmp/", l.String(); e != g {
 		t.Errorf("Expected location header \"%v\", but got \"%v\"", e, g)
 	}
 }
