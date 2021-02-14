@@ -1,5 +1,4 @@
-runtime: go
-api_version: go115
+runtime: go115
 handlers:
 - url: /.*
   script: _go_app
