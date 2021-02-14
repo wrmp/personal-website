@@ -1,14 +1,11 @@
 package server
 
 import (
-	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"path/filepath"
-	"runtime"
 )
 
 var pages struct {
@@ -38,12 +35,7 @@ func init() {
 }
 
 func loadPage(page *[]byte, file string) {
-	_, filename, _, ok := runtime.Caller(0)
-	fmt.Println(filename)
-	if !ok {
-		handleError(errors.New("could not get filename"))
-	}
-	path, err := filepath.Abs(filepath.Join(filepath.Dir(filename), "..", "frontend", file))
+	path, err := filepath.Abs(filepath.Join("frontend", file))
 	handleError(err)
 	*page, err = ioutil.ReadFile(path)
 	handleError(err)
@@ -51,12 +43,12 @@ func loadPage(page *[]byte, file string) {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	url := r.URL
-	if url.Scheme != "https" {
-		permanentRedirect(w, r, url, url.Hostname())
+	if r.Header.Get("X-Forwarded-Proto") != "https" {
+		permanentRedirect(w, r, url, r.Host)
 		return
 	}
 	w.Header().Set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
-	hostname := url.Hostname()
+	hostname := r.Host
 	switch hostname {
 	case "www.bobkidbob.com":
 		serve(w, r, url)
