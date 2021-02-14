@@ -1,13 +1,12 @@
 package server
 
 import (
-	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
-	"runtime"
 )
 
 var pages struct {
@@ -37,11 +36,9 @@ func init() {
 }
 
 func loadPage(page *[]byte, file string) {
-	_, filename, _, ok := runtime.Caller(1)
-	if !ok {
-		handleError(errors.New("could not get filename"))
-	}
-	path, err := filepath.Abs(filepath.Join(filepath.Dir(filename), "..", "frontend", file))
+	path, err := os.Getwd()
+	handleError(err)
+	path, err = filepath.Abs(filepath.Join(path, "frontend", file))
 	handleError(err)
 	*page, err = ioutil.ReadFile(path)
 	handleError(err)
