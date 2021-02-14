@@ -19,5 +19,5 @@ func (*home) Head(w http.ResponseWriter, r *http.Request) {
 }
 
 func homeRedirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "https://www.linkedin.com/in/bobkidbob/", http.StatusSeeOther)
+	http.Redirect(w, r, "https://www.linkedin.com/in/wrmp/", http.StatusSeeOther)
 }
