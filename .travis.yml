@@ -1,6 +1,6 @@
 language: go
 go:
-- '1.15'
+- '1.14'
 before_install:
 - openssl aes-256-cbc -K $encrypted_cbb04a6befb3_key -iv $encrypted_cbb04a6befb3_iv
   -in gae-service-account.json.enc -out gae-service-account.json -d

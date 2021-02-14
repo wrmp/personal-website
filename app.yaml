@@ -1,4 +1,4 @@
-runtime: go115
+runtime: go114
 handlers:
 - url: /.*
   script: _go_app
