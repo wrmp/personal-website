@@ -1,10 +1,13 @@
 package server
 
 import (
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"path/filepath"
+	"runtime"
 )
 
 var pages struct {
@@ -27,14 +30,21 @@ var routes = map[string]route{
 }
 
 func init() {
-	var err error
-	pages.MethodNotAllowed, err = ioutil.ReadFile("frontend/method-not-allowed.html")
-	handleError(err)
-	pages.NotFound, err = ioutil.ReadFile("frontend/not-found.html")
-	handleError(err)
-	pages.NotImplemented, err = ioutil.ReadFile("frontend/not-implemented.html")
-	handleError(err)
+	loadPage(&pages.MethodNotAllowed, "method-not-allowed.html")
+	loadPage(&pages.NotFound, "not-found.html")
+	loadPage(&pages.NotImplemented, "not-implemented.html")
 	http.HandleFunc("/", handler)
+}
+
+func loadPage(page *[]byte, file string) {
+	_, filename, _, ok := runtime.Caller(1)
+	if !ok {
+		handleError(errors.New("could not get filename"))
+	}
+	path, err := filepath.Abs(filepath.Join(filepath.Dir(filename), "..", "frontend", file))
+	handleError(err)
+	*page, err = ioutil.ReadFile(path)
+	handleError(err)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
