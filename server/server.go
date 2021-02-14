@@ -2,6 +2,7 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -38,6 +39,7 @@ func init() {
 
 func loadPage(page *[]byte, file string) {
 	_, filename, _, ok := runtime.Caller(0)
+	fmt.Println(filename)
 	if !ok {
 		handleError(errors.New("could not get filename"))
 	}
