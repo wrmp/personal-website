@@ -23,7 +23,8 @@ func TestNaked(t *testing.T) {
 	for i, l := 0, len(hosts); i < l; i++ {
 		h := hosts[i]
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest("GET", "https://"+h, nil)
+		r := httptest.NewRequest("GET", "http://"+h, nil)
+		r.Header.Add("X-Forwarded-Proto", "https")
 		handler(w, r)
 		res := w.Result()
 		if e, g := http.StatusPermanentRedirect, res.StatusCode; e != g {
@@ -43,7 +44,8 @@ func TestNaked(t *testing.T) {
 func TestAliases(t *testing.T) {
 	for i, l := 1, len(hosts); i < l; i++ {
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest("GET", "https://www."+hosts[i]+"/", nil)
+		r := httptest.NewRequest("GET", "http://www."+hosts[i]+"/", nil)
+		r.Header.Add("X-Forwarded-Proto", "https")
 		handler(w, r)
 		res := w.Result()
 		if e, g := http.StatusTemporaryRedirect, res.StatusCode; e != g {
@@ -67,7 +69,8 @@ func TestHome(t *testing.T) {
 // Test if non-existent page returns HTTP 404 Not Found error.
 func TestNotFound(t *testing.T) {
 	w := httptest.NewRecorder()
-	r := httptest.NewRequest("POST", "https://www.bobkidbob.com/thispagedoesnotexist", nil)
+	r := httptest.NewRequest("POST", "http://www.bobkidbob.com/thispagedoesnotexist", nil)
+	r.Header.Add("X-Forwarded-Proto", "https")
 	handler(w, r)
 	res := w.Result()
 	if e, g := http.StatusNotFound, res.StatusCode; e != g {
@@ -78,7 +81,8 @@ func TestNotFound(t *testing.T) {
 // Test if unimplemented HTTP methods return 501 Not Implemented error.
 func TestNotImplemented(t *testing.T) {
 	w := httptest.NewRecorder()
-	r := httptest.NewRequest("FAKEMETHOD", "https://www.bobkidbob.com/", nil)
+	r := httptest.NewRequest("FAKEMETHOD", "http://www.bobkidbob.com/", nil)
+	r.Header.Add("X-Forwarded-Proto", "https")
 	handler(w, r)
 	res := w.Result()
 	if e, g := http.StatusNotImplemented, res.StatusCode; e != g {
@@ -90,6 +94,7 @@ func TestNotImplemented(t *testing.T) {
 func forceHTTPS(t *testing.T, urn string) {
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "http://"+urn, nil)
+	r.Header.Add("X-Forwarded-Proto", "http")
 	handler(w, r)
 	res := w.Result()
 	if e, g := http.StatusPermanentRedirect, res.StatusCode; e != g {

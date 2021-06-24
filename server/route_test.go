@@ -47,7 +47,8 @@ func (routeTest *defaultRouteTest) TestTrace(t *testing.T) {
 
 func testMethodNotAllowed(t *testing.T, method, path string) {
 	w := httptest.NewRecorder()
-	r := httptest.NewRequest(method, "https://www.bobkidbob.com"+path, nil)
+	r := httptest.NewRequest(method, "http://www.bobkidbob.com"+path, nil)
+	r.Header.Add("X-Forwarded-Proto", "https")
 	t.Log(r.URL)
 	handler(w, r)
 	res := w.Result()

@@ -24,7 +24,8 @@ func (home *homeTest) TestHead(t *testing.T) {
 
 func testHome(t *testing.T, method, path string) {
 	w := httptest.NewRecorder()
-	r := httptest.NewRequest(method, "https://www.bobkidbob.com"+path, nil)
+	r := httptest.NewRequest(method, "http://www.bobkidbob.com"+path, nil)
+	r.Header.Add("X-Forwarded-Proto", "https")
 	handler(w, r)
 	res := w.Result()
 	if e, g := http.StatusSeeOther, res.StatusCode; e != g {
