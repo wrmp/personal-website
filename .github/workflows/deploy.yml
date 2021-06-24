@@ -15,7 +15,7 @@ jobs:
         with:
           go-version: ~1.15.0
 
-      - run: go test -json ./server
+      - run: go test ./server
 
       - uses: google-github-actions/deploy-appengine@main
         with:
