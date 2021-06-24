@@ -15,10 +15,7 @@ jobs:
         with:
           go-version: ~1.15.0
 
-      - run: go test -json ./server > test.json
-
-      - if: always()
-        uses: guyarb/golang-test-annotations@v0.4.0
+      - run: go test -json ./server
 
       - uses: google-github-actions/deploy-appengine@main
         with:
