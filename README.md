@@ -1,1 +1,1 @@
-# Personal Website [![Build Status](https://travis-ci.org/wrmp/personal-website.svg?branch=master)](https://travis-ci.org/wrmp/personal-website) [![Coverage Status](https://coveralls.io/repos/github/wrmp/personal-website/badge.svg?branch=master)](https://coveralls.io/github/wrmp/personal-website?branch=master)
+# Personal Website
